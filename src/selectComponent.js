@@ -1,19 +1,13 @@
 import Vue from 'vue';
 
 const createTraverse = () => {
-    debugger;
     let stop = false;
     return function traverse(root, callback) {
         if (!stop && typeof callback === 'function') {
             let children = root.$children;
             for (let index = 0; !stop && index < children.length; index++) {
                 let element = children[index];
-                let vnode = element._vnode;
-                if (vnode && vnode.data) {
-                    if (callback(vnode.data) === true) {
-                        stop = true;
-                    }
-                }
+                stop = callback(element) === true;
                 traverse(element, callback);
             }
         }
@@ -22,11 +16,11 @@ const createTraverse = () => {
 
 const match = (node, selector) => {
     const vnode = node._vnode;
-    let {attrs = {}, staticClass = ''} = vnode.data;
-    const {id = ''} = attrs;
+    let attrs = vnode.data.attrs || {};
+    let staticClass = vnode.data.staticClass || '';
+    const id = attrs.id || '';
     if (selector[0] === '#') {
-        let result = /#(\w+)/.exec(selector);
-        return result && result[1] === id;
+        return selector.substr(1) === id;
     } else {
         staticClass = staticClass.trim().split(' ');
         selector = selector.substr(1).split('.');
@@ -35,7 +29,11 @@ const match = (node, selector) => {
 };
 
 const selectorBuilder = (selector) => {
-    selector = selector.split(',').map(s => s.trim());
+    selector = selector.replace(/>>>/g, '>');
+    selector = selector.split('>').map(s => {
+        return s.trim().split(' ').join(`').descendant('`);
+    }).join(`').child('`);
+    return new Function('Selector', 'node', 'all', `return new Selector(node, all).descendant('` + selector + `')`);
 };
 
 class Selector {
@@ -48,12 +46,10 @@ class Selector {
         let matches = [];
         if (this.all) {
             this.nodes.forEach(node => {
-                if (match(node, selector)) {
-                    matches.push(node);
-                }
+                matches.push(...node.$children.filter(node => match(node, selector)));
             });
         } else {
-            let node = this.nodes.find(node => match(node, selector));
+            let node = this.nodes[0].$children.find(node => match(node, selector));
             matches = node ? [node] : [];
         }
         this.nodes = matches;
@@ -75,15 +71,11 @@ class Selector {
     }
 }
 
-// new Selector().child()
-
-
 Vue.prototype.selectComponent = function (selector) {
-    console.log(selector, this);
-    createTraverse()(this, (data) => {
-        console.log(data);
-        if (data.staticClass && data.staticClass.indexOf('bar') !== -1) {
-            return true;
-        }
-    });
+    const querySelector = selectorBuilder(selector);
+    console.log(selector, querySelector(Selector, this, false, selector).nodes[0]);
+};
+Vue.prototype.selectAllComponents = function (selector) {
+    const querySelector = selectorBuilder(selector);
+    console.log(selector, querySelector(Selector, this, true, selector).nodes);
 };

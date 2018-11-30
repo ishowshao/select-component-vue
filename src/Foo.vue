@@ -1,5 +1,5 @@
 <template>
-    <div class="foo">component foo<slot></slot></div>
+    <div id="the-id" class="foo">component foo<slot></slot></div>
 </template>
 <script>
 export default {

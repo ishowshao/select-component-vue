@@ -23,7 +23,20 @@ export default {
     }
   },
   mounted() {
-    this.selectComponent();
+    // this.selectComponent('#the-id');
+    // this.selectComponent('.bar');
+    // this.selectComponent('.foo > .bar');
+    // this.selectComponent('.foo .test');
+
+    this.selectAllComponents('#the-id');
+    this.selectAllComponents('.bar');
+    this.selectAllComponents('.foo > .bar');
+    this.selectAllComponents('.foo .test');
+    this.selectAllComponents('.foo .bar .test');
+    this.selectAllComponents('.bar .test');
+    // this.selectComponent('.the-ancestor .the-descendant');
+    // this.selectComponent('.the-ancestor >>> .the-descendant');
+    // this.selectComponent('.the-ancestor .the-descendant > .a');
   }
 }
 </script>
