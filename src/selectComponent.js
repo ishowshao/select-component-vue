@@ -1,9 +1,10 @@
 import Vue from 'vue';
 
 const createTraverse = () => {
+    debugger;
     let stop = false;
     return function traverse(root, callback) {
-        if (!stop && typeof callback !== 'function') {
+        if (!stop && typeof callback === 'function') {
             let children = root.$children;
             for (let index = 0; !stop && index < children.length; index++) {
                 let element = children[index];
@@ -34,7 +35,7 @@ const match = (node, selector) => {
 };
 
 const selectorBuilder = (selector) => {
-    
+    selector = selector.split(',').map(s => s.trim());
 };
 
 class Selector {
@@ -81,7 +82,7 @@ Vue.prototype.selectComponent = function (selector) {
     console.log(selector, this);
     createTraverse()(this, (data) => {
         console.log(data);
-        if (data.staticClass && data.staticClass.indexOf('checkbox iconfont') !== -1) {
+        if (data.staticClass && data.staticClass.indexOf('bar') !== -1) {
             return true;
         }
     });
