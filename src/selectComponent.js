@@ -49,8 +49,10 @@ class Selector {
                 matches.push(...node.$children.filter(node => match(node, selector)));
             });
         } else {
-            let node = this.nodes[0].$children.find(node => match(node, selector));
-            matches = node ? [node] : [];
+            if (this.nodes.length > 0) {
+                let node = this.nodes[0].$children.find(node => match(node, selector));
+                matches = node ? [node] : [];
+            }
         }
         this.nodes = matches;
         return this;
