@@ -1,5 +1,8 @@
 <template>
-    <div class="test">component test<slot></slot></div>
+    <div class="test">
+        <div>component test</div>
+        <slot></slot>
+    </div>
 </template>
 <script>
 export default {
@@ -10,3 +13,9 @@ export default {
     }
 }
 </script>
+<style>
+.test {
+    border: 1px solid black;
+    padding: 10px;
+}
+</style>

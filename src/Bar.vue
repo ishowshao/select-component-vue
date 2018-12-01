@@ -1,5 +1,8 @@
 <template>
-    <div class="bar">component bar<test></test></div>
+    <div class="bar">
+        <div>component bar</div>
+        <slot></slot>
+    </div>
 </template>
 <script>
 import Test from './Test';
@@ -14,3 +17,9 @@ export default {
     }
 }
 </script>
+<style>
+.bar {
+    border: 1px solid black;
+    padding: 10px;
+}
+</style>

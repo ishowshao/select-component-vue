@@ -74,10 +74,19 @@ class Selector {
 }
 
 Vue.prototype.selectComponent = function (selector) {
-    const querySelector = selectorBuilder(selector);
-    console.log(selector, querySelector(Selector, this, false, selector).nodes[0]);
+    const selectors = selector.split(',').map(s => s.trim());
+    if (!selectors[0]) {
+        return null;
+    }
+    const querySelector = selectorBuilder(selectors[0]);
+    return querySelector(Selector, this, false, selector).nodes[0];
 };
 Vue.prototype.selectAllComponents = function (selector) {
-    const querySelector = selectorBuilder(selector);
-    console.log(selector, querySelector(Selector, this, true, selector).nodes);
+    const selectors = selector.split(',').map(s => s.trim());
+    let selected = [];
+    selectors.forEach(selector => {
+        const querySelector = selectorBuilder(selector);
+        selected = selected.concat(querySelector(Selector, this, true, selector).nodes);
+    });
+    return selected;
 };
